@@ -4,7 +4,7 @@
   "type": "module",
   "description": "Reusable Claude Code setup with real-time lint hooks, review agents, a feature pipeline, and skill-authoring conventions.",
   "bin": {
-    "aitop-claude": "./bin/init.mjs"
+    "aitop-claude": "bin/init.mjs"
   },
   "files": [
     "hooks",
