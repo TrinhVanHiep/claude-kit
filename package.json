@@ -1,6 +1,6 @@
 {
   "name": "@hieptv/claude-kit",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "type": "module",
   "description": "Reusable Claude Code setup with real-time lint hooks, review agents, a feature pipeline, and skill-authoring conventions.",
   "bin": {
