@@ -1,0 +1,34 @@
+# AI agent instructions — {{PROJECT_NAME}}
+
+> Hard rules auto-loaded every session. These OVERRIDE default behavior.
+> Full convention: link your CONVENTION.md here if you have one.
+
+## Top hard rules (never violate)
+
+1. **Folder layout:** {{WHERE_NEW_CODE_LIVES}} (e.g. `features/<domain>/<page>/`).
+   Never put new code in {{LEGACY_LOCATION}}.
+2. **API boundary:** UI files import from {{API_BOUNDARY}} only — never reach into
+   `service/*` or `types/*` directly.
+3. **State decision tree:** server data → {{SERVER_STATE_LIB}} · URL state → router ·
+   global client → {{CLIENT_STATE_LIB}} · local UI → component state · form → {{FORM_LIB}}.
+4. **No redundant fetches** — check existing cache/store/query keys before adding one.
+5. **Standard libraries first** — {{LIST_BLESSED_HELPERS}}. Do not reinvent.
+6. **Security:** no unsanitized HTML, no token in localStorage, validate URL scheme,
+   MIME-whitelist uploads, no hardcoded secrets, scrub PII before logging.
+7. **Review prefixes:** `[BLOCK]` blocking · `[SUGGEST]` non-blocking · `[NIT]` style ·
+   `[Q]` question. Lead with blockers.
+
+## Tech stack
+- {{FRAMEWORK}} · {{LANGUAGE}} · {{UI_LIBRARY}} · {{STATE_LIBS}} · {{TEST_STACK}}
+
+## Component / styling rules
+- {{DESIGN_SYSTEM_RULES}} (e.g. import from the design system directly; theme only
+  in one config file; layout classes only, no appearance overrides).
+- Icons: {{ICON_LIBRARY}} only.
+
+## Enforcement
+- ESLint (custom rules in {{ESLINT_RULES_PATH}}) + pre-commit + CI.
+- Claude lint hooks (`@hieptv/claude-kit`) surface violations in real time.
+
+---
+Replace every {{PLACEHOLDER}}. Delete rules that don't apply; add project-specific ones.
