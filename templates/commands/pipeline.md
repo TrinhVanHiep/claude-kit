@@ -1,37 +1,69 @@
 ---
 name: pipeline
-description: Run the feature pipeline — requirements → architecture → review → implement → security review, with a gate between each stage. Use when the user asks to build a non-trivial feature end-to-end and wants reviewed, convention-compliant output rather than a one-shot edit.
+description: Input-driven feature pipeline for FE projects. Give it a task (free text, a ticket id/URL, a mockup image path, or a spec file) and it runs the full coding workflow — requirements → architecture → review → implement → verify → security — with human-approval gates. Use when the user wants a non-trivial feature built end-to-end with reviewed, convention-compliant output.
 ---
 
-# Feature pipeline
+# Feature pipeline (gated)
 
-Drive a feature from request to reviewed implementation through explicit stages.
-Each stage has a **gate**: do not proceed until its output is sound. State the
-verdict at each gate; if a gate fails, fix before advancing — never skip silently.
+Run the whole coding workflow for the task in `$ARGUMENTS`. Stop and ask for
+explicit approval at the two human gates below — never auto-proceed past them.
+State the verdict at every gate; if a gate fails, fix before advancing.
 
-## Stages
+## 0 · Ground & classify input
+- Read `CLAUDE.md` (hard rules, stack, folder layout, API boundary, test/scaffold
+  commands). If `CLAUDE.md` is missing or still has `{{PLACEHOLDERS}}`, STOP and
+  tell the user to complete grounding first (see `conventions/grounding-checklist.md`).
+- Classify `$ARGUMENTS`:
+  - **mockup image** (`.png/.jpg` path) → first derive a design spec (run the
+    project's `mockup-spec` flow if present) and treat it as the requirements input.
+  - **ticket** (URL / `PROJ-123`) → fetch it if an integration exists, else ask
+    the user to paste the description.
+  - **file path** → read it as the spec.
+  - **free text** → use as-is.
+- Create the run folder `.claude/pipeline/<slug>/` for all artifacts.
 
-1. **Requirements.** Restate the request as user stories + acceptance criteria +
-   explicit out-of-scope. Surface ambiguities now.
-   **Gate:** requirements are unambiguous and agreed.
+## 1 · Requirements — delegate to `ba-analyst`
+Produce user stories + acceptance criteria + edge cases + explicit out-of-scope.
+Write `01-requirements.md`.
 
-2. **Architecture** — delegate to the `architect` agent.
-   Produce the file-level plan, data flow, API contract, and todo list.
-   **Gate:** plan obeys `CLAUDE.md`, reuses existing code, no premature abstraction.
+> **🚦 GATE 1 (human approval).** Present the requirements summary and the open
+> questions. **STOP and ask the user to approve or adjust before continuing.**
 
-3. **Plan review** — delegate to `dev-reviewer` (and `security-reviewer` if the
-   feature touches auth/PII/external input). Run them in parallel.
-   **Gate:** no `[BLOCK]` findings remain unaddressed.
+## 2 · Architecture — delegate to `architect`
+Turn the approved requirements into a file-level plan: files to change, components
+to reuse, data flow, API contract, step-by-step todos. Write `02-architecture.md`.
 
-4. **Implement.** Execute the plan top-to-bottom. Keep diffs minimal and idiomatic.
-   The repo's lint hooks enforce conventions in real time — fix what they flag.
-   **Gate:** typecheck + lint pass; acceptance criteria met.
+## 3 · Plan review — run in parallel
+Delegate concurrently to `dev-reviewer`, `qa-planner`, and (if the feature touches
+auth / PII / external input / a backend API) `security-reviewer`. Fold their
+findings back into the plan. Write `03-review.md` + `04-test-plan.md`.
 
-5. **Security review** — delegate to `security-reviewer` on the actual diff.
-   **Gate:** no `[CRITICAL]`/`[HIGH]` findings remain.
+> **🚦 GATE 2 (human approval).** Present the reviewed plan + test plan. **STOP and
+> ask the user to approve before any code is written.** Do not implement until approved.
+
+## 4 · Implement
+- Scaffold with the project's generator first (e.g. `gen:feature`) when adding a
+  new domain — don't hand-create the folder layout.
+- For backend wiring, delegate to `api-integrator`.
+- Write minimal, idiomatic diffs that obey `CLAUDE.md`. The repo's lint hooks
+  enforce conventions on every edit — fix what they flag immediately.
+
+## 5 · Verify
+Run the project's declared commands (from `CLAUDE.md` / `package.json`):
+typecheck → lint → tests. Everything must pass. The `Stop` hook also gates the
+turn end on lint. Write results to `05-implementation-log.md`.
+
+## 6 · Security review — delegate to `security-reviewer`
+Audit the actual diff (`git diff`). Resolve every `[CRITICAL]`/`[HIGH]` finding.
+Write `06-security-review.md`.
+
+## 7 · Summary
+Report what changed (files + acceptance criteria met), verify results, and any
+follow-ups. Offer to open a PR — do not push/commit unless the user asks.
 
 ## Rules
-- Write artifacts (requirements, plan, reviews) under `.claude/pipeline/<slug>/`
-  so the run is auditable and resumable.
-- Prefer parallel sub-agents where stages are independent (e.g. dev + security review).
-- Lead with blockers. Don't pad with nits.
+- Two human gates only (after Requirements, before Implement). Everything else flows.
+- Prefer parallel sub-agents where stages are independent.
+- Lead with blockers; don't pad with nits.
+- Every stage leaves an artifact under `.claude/pipeline/<slug>/` so the run is
+  auditable and resumable.
