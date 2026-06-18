@@ -1,8 +1,8 @@
 {
   "name": "@hieptv/claude-kit",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "type": "module",
-  "description": "Reusable Claude Code setup with real-time lint hooks, review agents, a feature pipeline, and skill-authoring conventions.",
+  "description": "Claude Code toolkit with real-time ESLint hooks, a grounded multi-agent feature pipeline, human approval gates, and project scaffolding.",
   "bin": {
     "aitop-claude": "bin/init.mjs"
   },
