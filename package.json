@@ -19,13 +19,13 @@
     "code-quality",
     "automation"
   ],
-  "homepage": "https://github.com/hieptv/claude-kit#readme",
+  "homepage": "https://github.com/TrinhVanHiep/claude-kit#readme",
   "repository": {
     "type": "git",
-    "url": "https://github.com/hieptv/claude-kit.git"
+    "url": "https://github.com/TrinhVanHiep/claude-kit.git"
   },
   "bugs": {
-    "url": "https://github.com/hieptv/claude-kit/issues"
+    "url": "https://github.com/TrinhVanHiep/claude-kit/issues"
   },
   "bin": {
     "aitop-claude": "bin/init.mjs"

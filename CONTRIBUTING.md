@@ -3,7 +3,7 @@
 ## Setup
 
 ```bash
-git clone https://github.com/hieptv/claude-kit.git
+git clone https://github.com/TrinhVanHiep/claude-kit.git
 cd claude-kit
 node --version  # must be >=18
 ```
@@ -45,7 +45,7 @@ with at least `name`, `description`, and `tools`. Run the validator after editin
 
 ## Reporting bugs
 
-Open an issue at https://github.com/hieptv/claude-kit/issues with:
+Open an issue at https://github.com/TrinhVanHiep/claude-kit/issues with:
 - Node version (`node --version`)
 - The command you ran
 - Full terminal output
