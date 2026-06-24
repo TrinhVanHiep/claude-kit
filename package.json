@@ -22,7 +22,7 @@
   "homepage": "https://github.com/TrinhVanHiep/claude-kit#readme",
   "repository": {
     "type": "git",
-    "url": "https://github.com/TrinhVanHiep/claude-kit.git"
+    "url": "git+https://github.com/TrinhVanHiep/claude-kit.git"
   },
   "bugs": {
     "url": "https://github.com/TrinhVanHiep/claude-kit/issues"
