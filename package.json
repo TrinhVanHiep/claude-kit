@@ -3,6 +3,30 @@
   "version": "0.1.2",
   "type": "module",
   "description": "Claude Code toolkit with real-time ESLint hooks, a grounded multi-agent feature pipeline, human approval gates, and project scaffolding.",
+  "keywords": [
+    "claude",
+    "claude-code",
+    "anthropic",
+    "ai",
+    "llm",
+    "eslint",
+    "hooks",
+    "scaffolding",
+    "multi-agent",
+    "pipeline",
+    "developer-tools",
+    "devtools",
+    "code-quality",
+    "automation"
+  ],
+  "homepage": "https://github.com/hieptv/claude-kit#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hieptv/claude-kit.git"
+  },
+  "bugs": {
+    "url": "https://github.com/hieptv/claude-kit/issues"
+  },
   "bin": {
     "aitop-claude": "bin/init.mjs"
   },
@@ -27,5 +51,5 @@
     "access": "public",
     "registry": "https://registry.npmjs.org/"
   },
-  "license": "UNLICENSED"
+  "license": "MIT"
 }

@@ -1,19 +1,24 @@
 # @hieptv/claude-kit
 
-A reusable Claude Code setup for JavaScript/TypeScript projects. Two layers:
+[![npm version](https://img.shields.io/npm/v/@hieptv/claude-kit)](https://www.npmjs.com/package/@hieptv/claude-kit)
+[![npm downloads](https://img.shields.io/npm/dw/@hieptv/claude-kit)](https://www.npmjs.com/package/@hieptv/claude-kit)
+[![license](https://img.shields.io/npm/l/@hieptv/claude-kit)](LICENSE)
+[![node](https://img.shields.io/node/v/@hieptv/claude-kit)](package.json)
 
-- **Universal (auto-updating):** real-time ESLint hooks that make convention
-  violations visible to Claude the moment they happen — `PostToolUse` lints the
-  edited file, `Stop` lints everything changed before the turn ends. They reuse
-  **your** repo's ESLint config; no second source of truth. Fail-open, CI-parity.
-- **Editable (scaffolded once):** an input-driven, gated `/pipeline` command and
-  its agents (`ba-analyst`, `architect`, `dev-reviewer`, `qa-planner`,
-  `security-reviewer`, `api-integrator`), the skill-authoring convention, a
-  grounding checklist, and a `CLAUDE.md` template — copied into your repo to customize.
+> **Drop-in Claude Code setup** for JS/TS projects: real-time ESLint enforcement inside every Claude session + a gated multi-agent pipeline that stops to ask before writing a single line of code.
 
-Give `/pipeline` a task (free text, a ticket, a mockup image, or a spec file) and
-it runs requirements → architecture → review → implement → verify → security,
-pausing for your approval after Requirements and before any code is written.
+Two layers — one command to install both:
+
+- **Universal hooks (auto-updating):** `PostToolUse` lints the file Claude just
+  edited; `Stop` lints all working-tree changes before the turn ends. Uses
+  **your** repo's ESLint config — no second source of truth. Fail-open,
+  CI-parity.
+- **Editable scaffolding (yours to customize):** a `/pipeline` command that takes
+  any input (free text, ticket, mockup image, or spec file) and runs
+  requirements → architecture → code-review → implement → verify → security,
+  pausing for your approval after Requirements and before code is written. Six
+  specialist agents: `ba-analyst`, `architect`, `dev-reviewer`, `qa-planner`,
+  `security-reviewer`, `api-integrator`.
 
 ## Install
 
@@ -33,6 +38,34 @@ Then fill the `{{PLACEHOLDERS}}` in `CLAUDE.md`, work through
 `node_modules/@hieptv/claude-kit/hooks/*.mjs`, so `pnpm update @hieptv/claude-kit`
 upgrades the enforcement logic everywhere at once. The scaffolded agents and
 `CLAUDE.md` are yours to edit and are never overwritten without `--force`.
+
+## What `aitop-claude` does
+
+```
+$ pnpm exec aitop-claude
+@hieptv/claude-kit → /your-project
+
+  write          .claude/agents/ba-analyst.md
+  write          .claude/agents/architect.md
+  write          .claude/agents/dev-reviewer.md
+  write          .claude/agents/qa-planner.md
+  write          .claude/agents/security-reviewer.md
+  write          .claude/agents/api-integrator.md
+  write          .claude/commands/pipeline.md
+  write          .claude/conventions/skill-authoring.md
+  write          .claude/conventions/grounding-checklist.md
+  write          CLAUDE.md (template — fill the {{PLACEHOLDERS}})
+  write          .claude/settings.json (hooks wired)
+
+Done. Next:
+  1. Ensure @hieptv/claude-kit is a devDependency (so node_modules path resolves).
+  2. Fill the {{PLACEHOLDERS}} in CLAUDE.md and review .claude/agents.
+  3. Ensure ESLint is installed (the hooks lint via your repo's own config).
+  4. Restart Claude Code (or /clear) so hooks load. Verify with /hooks.
+```
+
+Run again with `--force` to overwrite existing files, or `--vendor` to copy hooks
+into `.claude/hooks/` (air-gapped / no node_modules required).
 
 ## What's in the box
 
