@@ -1,6 +1,6 @@
 {
   "name": "@hieptv/claude-kit",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "type": "module",
   "description": "Claude Code toolkit with real-time ESLint hooks, a grounded multi-agent feature pipeline, human approval gates, and project scaffolding.",
   "keywords": [
