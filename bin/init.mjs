@@ -85,6 +85,19 @@ function mergeSettings() {
   log('  write          .claude/settings.json (hooks wired)')
 }
 
+function createMcpJson() {
+  const file = path.join(TARGET, '.mcp.json')
+  const tmpl = path.join(KIT_ROOT, 'templates', 'mcp.json.tmpl')
+  if (!existsSync(tmpl))
+    return
+  if (existsSync(file) && !FORCE) {
+    log('  skip (exists)  .mcp.json')
+    return
+  }
+  cpSync(tmpl, file)
+  log('  write          .mcp.json (Playwright + Context7 MCP servers)')
+}
+
 function main() {
   log(`@hieptv/claude-kit → ${TARGET}${VENDOR ? ' (vendored hooks)' : ''}`)
   mkdirSync(path.join(TARGET, '.claude'), { recursive: true })
@@ -92,6 +105,7 @@ function main() {
   copyTree('templates/agents', '.claude/agents')
   copyTree('templates/commands', '.claude/commands')
   copyTree('templates/conventions', '.claude/conventions')
+  copyTree('templates/rules', '.claude/rules')
 
   if (VENDOR)
     copyTree('hooks', '.claude/hooks')
@@ -105,6 +119,7 @@ function main() {
     log('  skip (exists)  CLAUDE.md')
   }
 
+  createMcpJson()
   mergeSettings()
 
   log('')
@@ -112,7 +127,7 @@ function main() {
   if (!VENDOR)
     log('  1. Ensure @hieptv/claude-kit is a devDependency (so node_modules path resolves).')
   log(`  ${VENDOR ? '1' : '2'}. Fill the {{PLACEHOLDERS}} in CLAUDE.md and review .claude/agents.`)
-  log(`  ${VENDOR ? '2' : '3'}. Ensure ESLint is installed (the hooks lint via your repo's own config).`)
+  log(`  ${VENDOR ? '2' : '3'}. Ensure ESLint is installed (the hooks lint via your repo\'s own config).`)
   log(`  ${VENDOR ? '3' : '4'}. Restart Claude Code (or /clear) so hooks load. Verify with /hooks.`)
 }
 

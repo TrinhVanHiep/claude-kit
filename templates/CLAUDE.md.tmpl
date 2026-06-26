@@ -1,34 +1,77 @@
 # AI agent instructions — {{PROJECT_NAME}}
 
-> Hard rules auto-loaded every session. These OVERRIDE default behavior.
-> Full convention: link your CONVENTION.md here if you have one.
+> Hard rules auto-loaded every session. Keep this file under 200 lines.
+> Domain-specific rules live in `.claude/rules/` and load lazily per file type.
 
-## Top hard rules (never violate)
+## Hard rules (never violate)
 
-1. **Folder layout:** {{WHERE_NEW_CODE_LIVES}} (e.g. `features/<domain>/<page>/`).
-   Never put new code in {{LEGACY_LOCATION}}.
-2. **API boundary:** UI files import from {{API_BOUNDARY}} only — never reach into
-   `service/*` or `types/*` directly.
-3. **State decision tree:** server data → {{SERVER_STATE_LIB}} · URL state → router ·
-   global client → {{CLIENT_STATE_LIB}} · local UI → component state · form → {{FORM_LIB}}.
-4. **No redundant fetches** — check existing cache/store/query keys before adding one.
-5. **Standard libraries first** — {{LIST_BLESSED_HELPERS}}. Do not reinvent.
-6. **Security:** no unsanitized HTML, no token in localStorage, validate URL scheme,
-   MIME-whitelist uploads, no hardcoded secrets, scrub PII before logging.
-7. **Review prefixes:** `[BLOCK]` blocking · `[SUGGEST]` non-blocking · `[NIT]` style ·
-   `[Q]` question. Lead with blockers.
+1. **Folder layout:** new code goes in `{{WHERE_NEW_CODE_LIVES}}`.
+   Never create files in `{{LEGACY_LOCATION}}`.
+2. **API boundary:** UI imports from `{{API_BOUNDARY}}` only — never `service/*`
+   or `types/*` directly.
+3. **State decision tree:**
+   server data → `{{SERVER_STATE_LIB}}` ·
+   URL state → router ·
+   global client → `{{CLIENT_STATE_LIB}}` ·
+   local UI → component state ·
+   form draft → `{{FORM_LIB}}`
+4. **No redundant fetches** — grep existing query keys before adding a new one.
+5. **Blessed libraries** — use `{{LIST_BLESSED_HELPERS}}`. Do not reinvent.
+6. **No hardcoded secrets** — env vars only. No tokens in localStorage or logs.
+7. **Review prefixes:** `[BLOCK]` · `[SUGGEST]` · `[NIT]` · `[Q]`. Lead with blockers.
 
 ## Tech stack
-- {{FRAMEWORK}} · {{LANGUAGE}} · {{UI_LIBRARY}} · {{STATE_LIBS}} · {{TEST_STACK}}
+| Layer | Choice |
+|---|---|
+| Framework | {{FRAMEWORK}} |
+| Language | {{LANGUAGE}} (strict mode, no `any`) |
+| UI library | {{UI_LIBRARY}} |
+| Styling | {{STYLING}} |
+| State | {{STATE_LIBS}} |
+| Data fetching | {{SERVER_STATE_LIB}} |
+| Testing | {{TEST_STACK}} |
+| DB / ORM | {{DB_ORM}} |
 
-## Component / styling rules
-- {{DESIGN_SYSTEM_RULES}} (e.g. import from the design system directly; theme only
-  in one config file; layout classes only, no appearance overrides).
-- Icons: {{ICON_LIBRARY}} only.
+## Folder layout
+```
+{{PROJECT_ROOT}}/
+  {{WHERE_NEW_CODE_LIVES}}/   ← all new feature code
+  {{API_BOUNDARY}}/           ← only import point for UI → service
+  {{LEGACY_LOCATION}}/        ← do not add new code here
+```
+
+## Commands (always use these, never custom scripts)
+```bash
+{{TYPECHECK_CMD}}   # typecheck
+{{LINT_CMD}}        # lint
+{{TEST_CMD}}        # unit + integration tests
+{{E2E_CMD}}         # e2e (Playwright)
+{{DEV_CMD}}         # start dev server
+{{BUILD_CMD}}       # production build
+{{GEN_CMD}}         # scaffold a new feature (if available)
+```
+
+## Backend / DB rules
+- Schema changes go through migrations — no manual DB edits.
+- Every new table needs an index on columns used in `WHERE` / `ORDER BY` / `JOIN`.
+- No raw SQL strings — use `{{DB_ORM}}` query builder / ORM.
+- Paginate every list query; no unbounded `SELECT *`.
+
+## Lazy-loaded rules
+The following load automatically when Claude touches matching files:
+- `.claude/rules/security.md` — auth, API, middleware files
+- `.claude/rules/testing.md` — test and spec files
+- `.claude/rules/api-conventions.md` — route, controller, handler files
+
+## Agents available
+`/pipeline` · `/debug` · `/review-pr` · `/refactor`
+Agents: `architect` · `ba-analyst` · `dev-reviewer` · `qa-planner` ·
+`security-reviewer` · `api-integrator` · `debugger` · `ui-test-author` ·
+`performance-reviewer` · `refactorer` · `tech-writer`
 
 ## Enforcement
-- ESLint (custom rules in {{ESLINT_RULES_PATH}}) + pre-commit + CI.
-- Claude lint hooks (`@hieptv/claude-kit`) surface violations in real time.
+ESLint (rules in `{{ESLINT_RULES_PATH}}`) + pre-commit + CI.
+Real-time lint via `@hieptv/claude-kit` hooks on every Edit/Stop.
 
 ---
-Replace every {{PLACEHOLDER}}. Delete rules that don't apply; add project-specific ones.
+Fill every `{{PLACEHOLDER}}`. Delete rows that don't apply. Keep under 200 lines.

@@ -3,6 +3,8 @@ name: qa-planner
 description: QA / Test Planner. Use in the /pipeline workflow, in parallel with the plan review, to produce a manual + automated test plan from the requirements and architecture. Read-only; does NOT write test code, only the plan.
 tools: Read, Grep, Glob, Bash
 model: sonnet
+color: green
+maxTurns: 6
 ---
 
 You are a QA engineer planning how this feature will be tested. You write the

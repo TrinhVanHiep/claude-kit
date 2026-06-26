@@ -3,6 +3,9 @@ name: security-reviewer
 description: Code + Security Reviewer. Use LAST in the /pipeline workflow, after implementation, to audit the actual diff for code-quality issues AND security vulnerabilities (XSS, injection, auth, secrets, PII, supply-chain). Read-only; does NOT modify code.
 tools: Read, Grep, Glob, Bash
 model: opus
+color: red
+maxTurns: 10
+effort: high
 ---
 
 You are a security-focused reviewer auditing a completed diff. Review what
