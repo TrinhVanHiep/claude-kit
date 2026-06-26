@@ -5,89 +5,100 @@
 [![license](https://img.shields.io/npm/l/@hieptv/claude-kit)](LICENSE)
 [![node](https://img.shields.io/node/v/@hieptv/claude-kit)](package.json)
 
-> **Drop-in Claude Code setup** for JS/TS projects: real-time ESLint enforcement inside every Claude session + a gated multi-agent pipeline that stops to ask before writing a single line of code.
+> **A senior fullstack engineering team for Claude Code.** One command scaffolds
+> 11 specialist agents, 4 workflow commands, lazy-loaded domain rules, and
+> real-time ESLint enforcement — so Claude writes code that passes review the
+> first time.
 
-Two layers — one command to install both:
+Two layers, installed together:
 
 - **Universal hooks (auto-updating):** `PostToolUse` lints the file Claude just
-  edited; `Stop` lints all working-tree changes before the turn ends. Uses
-  **your** repo's ESLint config — no second source of truth. Fail-open,
-  CI-parity.
-- **Editable scaffolding (yours to customize):** a `/pipeline` command that takes
-  any input (free text, ticket, mockup image, or spec file) and runs
-  requirements → architecture → code-review → implement → verify → security,
-  pausing for your approval after Requirements and before code is written. Six
-  specialist agents: `ba-analyst`, `architect`, `dev-reviewer`, `qa-planner`,
-  `security-reviewer`, `api-integrator`.
+  edited; `Stop` lints all working-tree changes before the turn ends — using
+  **your** repo's ESLint config, no second source of truth. Fail-open, CI-parity.
+- **Editable scaffolding (yours to customize):** agents, commands, lazy-loaded
+  rules, and a `CLAUDE.md` skeleton — copied into your repo so you can tune them.
 
 ## Install
 
 ```bash
 pnpm add -D @hieptv/claude-kit
 pnpm exec aitop-claude
-# or: pnpm exec aitop-claude --vendor
+# or: pnpm exec aitop-claude --vendor   # air-gapped (copies hooks into .claude/hooks)
 ```
 
-Then fill the `{{PLACEHOLDERS}}` in `CLAUDE.md`, work through
-`conventions/grounding-checklist.md`, ensure ESLint is installed, and
-**restart Claude Code** so the hooks load (`/hooks` to verify).
+Then fill the `{{PLACEHOLDERS}}` in `CLAUDE.md`, ensure ESLint is installed, and
+**restart Claude Code** so the hooks and agents load (`/hooks` and `/agents` to verify).
+
+## The team — 11 agents
+
+| Agent | Role | Model | Access |
+|---|---|---|---|
+| `ba-analyst` | Requirements → user stories + acceptance criteria | sonnet | read-only |
+| `architect` | Requirements → file-level implementation plan | opus | read-only |
+| `dev-reviewer` | Senior code review — conventions, over-engineering | sonnet | read-only |
+| `qa-planner` | Test plan from acceptance criteria | sonnet | read-only |
+| `security-reviewer` | Diff audit — XSS, injection, auth, secrets, PII | opus | read-only |
+| `api-integrator` | Wire backend API → typed frontend data layer | opus | writes |
+| `debugger` | Root-cause bug hunting — proves before fixing | opus | writes |
+| `ui-test-author` | Playwright E2E tests with semantic locators | sonnet | writes |
+| `performance-reviewer` | Re-renders, N+1, bundle size, memory leaks | sonnet | read-only |
+| `refactorer` | Behavior-preserving refactor in an isolated worktree | opus | writes (worktree) |
+| `tech-writer` | Docs derived from actual code — never invented | sonnet | writes docs |
+
+Reviewers are least-privilege (`Read, Grep, Glob, Bash`); writers get `Edit/Write`
+with `permissionMode: acceptEdits`. The `refactorer` runs in `isolation: worktree`
+so your working tree is never touched until you approve its diff.
+
+## The commands — 4 workflows
+
+| Command | What it does |
+|---|---|
+| `/pipeline <task>` | Full feature build: requirements → architecture → review → implement → verify → security, with **two human gates** (after Requirements, before any code). Accepts free text, a ticket, a mockup image, or a spec file. |
+| `/debug <symptom>` | Delegates to `debugger` — reproduces, forms hypotheses, proves the root cause, fixes minimally, verifies. |
+| `/review-pr [PR#\|branch]` | Runs `dev-reviewer` + `security-reviewer` + `performance-reviewer` in parallel, returns one severity-grouped report. Can post inline PR comments. |
+| `/refactor <target>` | Delegates to `refactorer` — restructures in an isolated worktree, runs all checks, presents the diff for approval. |
+
+## Lazy-loaded rules
+
+Domain rules live in `.claude/rules/*.md` with `paths:` frontmatter — they load
+**only when Claude touches a matching file**, keeping the base context lean:
+
+| Rule | Loads when editing |
+|---|---|
+| `security.md` | `**/auth/**`, `**/api/**`, `**/middleware/**`, `**/routes/**` |
+| `testing.md` | `**/*.test.*`, `**/*.spec.*`, `**/e2e/**` |
+| `api-conventions.md` | `**/api/**`, `**/controllers/**`, `**/handlers/**` |
+
+## What `aitop-claude` scaffolds
+
+```
+.claude/
+  agents/        ← 11 specialist agents
+  commands/      ← pipeline · debug · review-pr · refactor
+  rules/         ← security · testing · api-conventions (lazy-loaded)
+  conventions/   ← grounding-checklist · skill-authoring
+  settings.json  ← ESLint hooks wired
+CLAUDE.md        ← hard-rules skeleton (fill the {{PLACEHOLDERS}})
+.mcp.json        ← Playwright + Context7 MCP servers
+```
+
+Re-run with `--force` to overwrite, or `--vendor` to copy hooks into
+`.claude/hooks/` (no `node_modules` path needed).
 
 ## How it stays drift-free
 
 `settings.json` points the hooks at
 `node_modules/@hieptv/claude-kit/hooks/*.mjs`, so `pnpm update @hieptv/claude-kit`
-upgrades the enforcement logic everywhere at once. The scaffolded agents and
-`CLAUDE.md` are yours to edit and are never overwritten without `--force`.
-
-## What `aitop-claude` does
-
-```
-$ pnpm exec aitop-claude
-@hieptv/claude-kit → /your-project
-
-  write          .claude/agents/ba-analyst.md
-  write          .claude/agents/architect.md
-  write          .claude/agents/dev-reviewer.md
-  write          .claude/agents/qa-planner.md
-  write          .claude/agents/security-reviewer.md
-  write          .claude/agents/api-integrator.md
-  write          .claude/commands/pipeline.md
-  write          .claude/conventions/skill-authoring.md
-  write          .claude/conventions/grounding-checklist.md
-  write          CLAUDE.md (template — fill the {{PLACEHOLDERS}})
-  write          .claude/settings.json (hooks wired)
-
-Done. Next:
-  1. Ensure @hieptv/claude-kit is a devDependency (so node_modules path resolves).
-  2. Fill the {{PLACEHOLDERS}} in CLAUDE.md and review .claude/agents.
-  3. Ensure ESLint is installed (the hooks lint via your repo's own config).
-  4. Restart Claude Code (or /clear) so hooks load. Verify with /hooks.
-```
-
-Run again with `--force` to overwrite existing files, or `--vendor` to copy hooks
-into `.claude/hooks/` (air-gapped / no node_modules required).
-
-## What's in the box
-
-| Path | Layer | Purpose |
-|---|---|---|
-| `hooks/lint-edited-file.mjs` | universal | `PostToolUse` — lint the file just edited |
-| `hooks/gate-stop.mjs` | universal | `Stop` — lint all working-tree changes |
-| `bin/init.mjs` | tooling | scaffolder (`aitop-claude`) |
-| `templates/agents/*` | editable | ba-analyst · architect · dev-reviewer · qa-planner · security-reviewer · api-integrator |
-| `templates/commands/pipeline.md` | editable | input-driven gated feature pipeline |
-| `templates/conventions/skill-authoring.md` | editable | how to write skills/agents |
-| `templates/conventions/grounding-checklist.md` | editable | what each project must provide |
-| `templates/CLAUDE.md.tmpl` | editable | hard-rules skeleton |
-| `scripts/validate-skills.mjs` | tooling | frontmatter linter for skills/agents |
+upgrades the enforcement logic everywhere at once. The scaffolded agents, rules,
+and `CLAUDE.md` are yours to edit and are never overwritten without `--force`.
 
 ## Design notes
 
-- **Fail-open** by design — a hook bug must never brick a session. (A compliance
-  repo can fork to fail-closed.)
+- **Fail-open** — a hook bug must never brick a session. (Fork to fail-closed for
+  compliance repos.)
 - **CI-parity** — hooks run ESLint with `CI=true` so editor-mode rule relaxations
-  don't let violations through that CI would later block.
-- **Least-privilege agents** — reviewers are read-only (`Read, Grep, Glob, Bash`).
-- **Two human gates only** — after Requirements and before Implement; everything else flows.
-- **Grounding-dependent** — the pipeline is only as good as the project's `CLAUDE.md`,
-  custom ESLint rules, and declared commands. See `conventions/grounding-checklist.md`.
+  don't let violations slip past that CI would later block.
+- **Least-privilege agents** — reviewers can't write; only implementers get edit access.
+- **Two human gates only** — after Requirements and before Implement; the rest flows.
+- **Grounding-dependent** — the agents are only as good as your `CLAUDE.md`, custom
+  ESLint rules, and declared commands. See `conventions/grounding-checklist.md`.
