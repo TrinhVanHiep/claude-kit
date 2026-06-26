@@ -1,6 +1,6 @@
 {
   "name": "@hieptv/claude-kit",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "type": "module",
   "description": "A senior fullstack engineering team for Claude Code: 11 specialist agents, 4 workflow commands (pipeline/debug/review-pr/refactor), lazy-loaded domain rules, and real-time ESLint hooks — scaffolded into your repo with one command.",
   "keywords": [
