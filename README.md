@@ -4,6 +4,7 @@
 [![npm downloads](https://img.shields.io/npm/dw/@hieptv/claude-kit)](https://www.npmjs.com/package/@hieptv/claude-kit)
 [![license](https://img.shields.io/npm/l/@hieptv/claude-kit)](LICENSE)
 [![node](https://img.shields.io/node/v/@hieptv/claude-kit)](package.json)
+[![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
 > **A senior fullstack engineering team for Claude Code.** One command scaffolds
 > 11 specialist agents, 4 workflow commands, lazy-loaded domain rules, and
@@ -84,6 +85,17 @@ CLAUDE.md        ← hard-rules skeleton (fill the {{PLACEHOLDERS}})
 
 Re-run with `--force` to overwrite, or `--vendor` to copy hooks into
 `.claude/hooks/` (no `node_modules` path needed).
+
+## Examples
+
+Step-by-step walkthroughs with the exact prompts to type:
+
+- [**Build a feature end-to-end**](examples/feature-pipeline.md) — `/pipeline` from
+  requirements to security review, with the two human gates.
+- [**Fix a bug, then harden it**](examples/debug-and-review.md) — `/debug` finds the
+  root cause, `/review-pr` audits the fix in parallel.
+- [**Refactor safely**](examples/refactor-safely.md) — `/refactor` restructures in an
+  isolated worktree you approve before merging.
 
 ## How it stays drift-free
 

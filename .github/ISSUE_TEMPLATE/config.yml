@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 📦 npm package
+    url: https://www.npmjs.com/package/@hieptv/claude-kit
+    about: Versions, install instructions, and the published README.
+  - name: 📖 Contributing guide
+    url: https://github.com/TrinhVanHiep/claude-kit/blob/main/CONTRIBUTING.md
+    about: Setup, project layout, and the release process.

@@ -1,0 +1,55 @@
+name: Bug Report
+description: Something in the kit (a hook, the scaffolder, or an agent) isn't working
+labels: ["bug"]
+body:
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: What did you expect, and what happened instead?
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Which part?
+      options:
+        - Scaffolder (aitop-claude / bin/init.mjs)
+        - Lint hooks (PostToolUse / Stop)
+        - An agent (architect, debugger, etc.)
+        - A command (/pipeline, /debug, /review-pr, /refactor)
+        - Lazy-loaded rules
+        - Docs
+    validations:
+      required: true
+
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Run `pnpm exec aitop-claude`
+        2. ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: env
+    attributes:
+      label: Environment
+      description: Output of `node --version`, your package manager, OS, and the kit version.
+      placeholder: |
+        node: v20.x
+        pm: pnpm 9.x
+        os: macOS 15
+        @hieptv/claude-kit: 0.1.5
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant output
+      description: Full terminal output or the failing hook message.
+      render: shell

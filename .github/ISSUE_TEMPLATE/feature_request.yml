@@ -1,0 +1,38 @@
+name: Feature / Agent Request
+description: Suggest a new agent, command, rule, or improvement
+labels: ["enhancement"]
+body:
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What are you proposing?
+      options:
+        - New agent
+        - New command
+        - New lazy-loaded rule
+        - Improvement to an existing piece
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does it solve?
+      description: The gap in the current kit, and when you'd reach for this.
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behavior
+      description: For an agent — its role, model, and whether it reads or writes. For a command — the workflow it runs.
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Existing agents/commands that almost cover this, and why they fall short.

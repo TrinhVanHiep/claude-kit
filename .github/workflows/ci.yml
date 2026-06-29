@@ -1,0 +1,33 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  validate:
+    name: Validate agent + command frontmatter
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Validate skills/agents/commands
+        run: node scripts/validate-skills.mjs templates/agents templates/commands
+
+      - name: Smoke-test the scaffolder
+        run: |
+          mkdir -p /tmp/scaffold-test
+          cd /tmp/scaffold-test
+          npm init -y >/dev/null
+          node "$GITHUB_WORKSPACE/bin/init.mjs"
+          test -f .claude/agents/architect.md
+          test -f .claude/commands/pipeline.md
+          test -f .claude/rules/security.md
+          test -f CLAUDE.md
+          test -f .mcp.json
+          echo "Scaffold smoke test passed."
