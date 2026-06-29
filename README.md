@@ -56,7 +56,7 @@ so your working tree is never touched until you approve its diff.
 | Command | What it does |
 |---|---|
 | `/pipeline <task>` | Full feature build: requirements → architecture → review → implement → verify → security, with **two human gates** (after Requirements, before any code). Accepts free text, a ticket, a mockup image, or a spec file. |
-| `/design-spec <image\|url\|figma>` | Delegates to `design-analyzer` — turns a mockup or design link into a build-ready spec (components mapped to your design system, tokens, states, responsive) you can feed into `/pipeline`. |
+| `/design-spec <image\|url\|design-link>` | Delegates to `design-analyzer` — turns a mockup or design-tool link (Figma, Visily, Sketch, …) into a build-ready spec (components mapped to your design system, tokens, states, responsive) you can feed into `/pipeline`. |
 | `/debug <symptom>` | Delegates to `debugger` — reproduces, forms hypotheses, proves the root cause, fixes minimally, verifies. |
 | `/review-pr [PR#\|branch]` | Runs `dev-reviewer` + `security-reviewer` + `performance-reviewer` in parallel, returns one severity-grouped report. Can post inline PR comments. |
 | `/refactor <target>` | Delegates to `refactorer` — restructures in an isolated worktree, runs all checks, presents the diff for approval. |

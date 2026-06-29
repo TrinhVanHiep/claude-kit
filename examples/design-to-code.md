@@ -8,17 +8,21 @@ spec **before** any code is written.
 
 ## Step 1 — Turn the design into a spec
 
-Pass a local image, an image URL, or a Figma link:
+Pass a local image, an image URL, or a design-tool link:
 
 ```
 /design-spec ./design/settings-page.png
 /design-spec https://example.com/mockups/settings.png
 /design-spec https://www.figma.com/file/abc123/Settings?node-id=12-34
+/design-spec https://app.visily.ai/projects/<id>/boards/<id>
 ```
 
-> **Figma:** if a Figma MCP / Dev Mode server is configured, the `design-analyzer`
-> pulls exact tokens and measurements. Otherwise it asks you to export the frame
-> as a 2x PNG — it won't guess values it can't see.
+> **Design-tool links** (Figma, Visily, Sketch, Penpot, Adobe XD, …) need login and
+> render in the browser, so a raw fetch returns nothing. `/design-spec` gets the
+> pixels first — a dedicated MCP (e.g. Figma Dev Mode) for exact tokens, else
+> opening the board via a browser MCP and screenshotting each frame, else asking
+> you to export a 2x PNG — then hands the image to `design-analyzer`. It never
+> guesses values it can't see.
 
 The `design-analyzer` agent will:
 

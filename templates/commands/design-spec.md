@@ -1,6 +1,6 @@
 ---
 name: design-spec
-description: Turn a design into a build-ready spec. Pass a mockup image path, an image URL, or a Figma link and it delegates to the design-analyzer agent to produce a structured spec — components mapped to your design system, tokens, states, interactions, responsive behavior — that you can hand to /pipeline or an implementer.
+description: Turn a design into a build-ready spec. Pass a mockup image path, an image URL, or a design-tool link (Figma, Visily, Sketch, …) and it delegates to the design-analyzer agent to produce a structured spec — components mapped to your design system, tokens, states, interactions, responsive behavior — that you can hand to /pipeline or an implementer.
 ---
 
 # Design → spec
@@ -11,8 +11,14 @@ to the `design-analyzer` agent — do NOT eyeball the design and start coding yo
 ## Step 1 — Classify & prepare the input
 - **Local image** (`.png/.jpg/.webp` path) → pass the path straight to the agent.
 - **Image URL** → the agent downloads it (`curl`) then reads it.
-- **Figma link** → if a Figma MCP / Dev Mode server is configured, the agent uses
-  it. Otherwise, ask the user to export the frame as PNG (2x) and pass that.
+- **Design-tool link** (Figma, Visily, Sketch, Penpot, Adobe XD, …) → a raw fetch
+  returns nothing (these need login and render in JS), so get the pixels first, in
+  priority order:
+  1. a dedicated MCP (e.g. Figma Dev Mode) for exact tokens;
+  2. else, if a browser MCP is available and the user is logged in, open the board,
+     wait for it to render, and screenshot each frame;
+  3. else ask the user to export the frame(s) as PNG (2x).
+  Then hand the image(s) to `design-analyzer` — never pass it a bare link.
 - **Nothing usable** (dead link, unreadable file) → stop and ask for a real asset;
   never fabricate a spec.
 
