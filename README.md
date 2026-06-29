@@ -7,7 +7,7 @@
 [![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
 > **A senior fullstack engineering team for Claude Code.** One command scaffolds
-> 11 specialist agents, 4 workflow commands, lazy-loaded domain rules, and
+> 12 specialist agents, 5 workflow commands, lazy-loaded domain rules, and
 > real-time ESLint enforcement — so Claude writes code that passes review the
 > first time.
 
@@ -30,10 +30,11 @@ pnpm exec aitop-claude
 Then fill the `{{PLACEHOLDERS}}` in `CLAUDE.md`, ensure ESLint is installed, and
 **restart Claude Code** so the hooks and agents load (`/hooks` and `/agents` to verify).
 
-## The team — 11 agents
+## The team — 12 agents
 
 | Agent | Role | Model | Access |
 |---|---|---|---|
+| `design-analyzer` | Mockup/Figma → build-ready spec mapped to your design system | opus | read-only |
 | `ba-analyst` | Requirements → user stories + acceptance criteria | sonnet | read-only |
 | `architect` | Requirements → file-level implementation plan | opus | read-only |
 | `dev-reviewer` | Senior code review — conventions, over-engineering | sonnet | read-only |
@@ -50,11 +51,12 @@ Reviewers are least-privilege (`Read, Grep, Glob, Bash`); writers get `Edit/Writ
 with `permissionMode: acceptEdits`. The `refactorer` runs in `isolation: worktree`
 so your working tree is never touched until you approve its diff.
 
-## The commands — 4 workflows
+## The commands — 5 workflows
 
 | Command | What it does |
 |---|---|
 | `/pipeline <task>` | Full feature build: requirements → architecture → review → implement → verify → security, with **two human gates** (after Requirements, before any code). Accepts free text, a ticket, a mockup image, or a spec file. |
+| `/design-spec <image\|url\|figma>` | Delegates to `design-analyzer` — turns a mockup or design link into a build-ready spec (components mapped to your design system, tokens, states, responsive) you can feed into `/pipeline`. |
 | `/debug <symptom>` | Delegates to `debugger` — reproduces, forms hypotheses, proves the root cause, fixes minimally, verifies. |
 | `/review-pr [PR#\|branch]` | Runs `dev-reviewer` + `security-reviewer` + `performance-reviewer` in parallel, returns one severity-grouped report. Can post inline PR comments. |
 | `/refactor <target>` | Delegates to `refactorer` — restructures in an isolated worktree, runs all checks, presents the diff for approval. |
@@ -74,8 +76,8 @@ Domain rules live in `.claude/rules/*.md` with `paths:` frontmatter — they loa
 
 ```
 .claude/
-  agents/        ← 11 specialist agents
-  commands/      ← pipeline · debug · review-pr · refactor
+  agents/        ← 12 specialist agents
+  commands/      ← pipeline · design-spec · debug · review-pr · refactor
   rules/         ← security · testing · api-conventions (lazy-loaded)
   conventions/   ← grounding-checklist · skill-authoring
   settings.json  ← ESLint hooks wired
@@ -90,6 +92,8 @@ Re-run with `--force` to overwrite, or `--vendor` to copy hooks into
 
 Step-by-step walkthroughs with the exact prompts to type:
 
+- [**From a mockup to shipped code**](examples/design-to-code.md) — `/design-spec`
+  turns a design into a repo-grounded spec, then `/pipeline` builds it.
 - [**Build a feature end-to-end**](examples/feature-pipeline.md) — `/pipeline` from
   requirements to security review, with the two human gates.
 - [**Fix a bug, then harden it**](examples/debug-and-review.md) — `/debug` finds the

@@ -5,6 +5,7 @@ prompts to type and what each stage produces.
 
 | Example | Commands / agents used |
 |---|---|
+| [From a mockup to shipped code](design-to-code.md) | `/design-spec` → design-analyzer, then `/pipeline` |
 | [Build a feature end-to-end](feature-pipeline.md) | `/pipeline` → ba-analyst · architect · dev-reviewer · qa-planner · security-reviewer · api-integrator |
 | [Fix a bug, then harden it](debug-and-review.md) | `/debug` → debugger, then `/review-pr` → dev/security/performance reviewers |
 | [Refactor safely](refactor-safely.md) | `/refactor` → refactorer (isolated worktree) |

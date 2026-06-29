@@ -14,8 +14,9 @@ State the verdict at every gate; if a gate fails, fix before advancing.
   commands). If `CLAUDE.md` is missing or still has `{{PLACEHOLDERS}}`, STOP and
   tell the user to complete grounding first (see `conventions/grounding-checklist.md`).
 - Classify `$ARGUMENTS`:
-  - **mockup image** (`.png/.jpg` path) → first derive a design spec (run the
-    project's `mockup-spec` flow if present) and treat it as the requirements input.
+  - **mockup image or design link** (`.png/.jpg/.webp` path, image URL, or Figma
+    link) → first delegate to `design-analyzer` (or run `/design-spec`) to derive a
+    build-ready design spec, then treat that spec as the requirements input.
   - **ticket** (URL / `PROJ-123`) → fetch it if an integration exists, else ask
     the user to paste the description.
   - **file path** → read it as the spec.
