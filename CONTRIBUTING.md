@@ -38,10 +38,21 @@ with at least `name`, `description`, and `tools`. Run the validator after editin
 
 ## Releasing
 
+Publishing is automated via **npm Trusted Publishing** (OIDC) — no token, no OTP.
+
+**One-time setup** (maintainer, on npmjs.com):
+- Go to the package → **Settings → Trusted Publisher → GitHub Actions**.
+- Repository: `TrinhVanHiep/claude-kit`, workflow: `.github/workflows/publish.yml`.
+
+**Each release:**
 1. Bump `version` in `package.json` following semver.
 2. Commit: `git commit -m "chore: release vX.Y.Z"`.
 3. Tag: `git tag vX.Y.Z`.
-4. Push tag: `git push origin vX.Y.Z` — GitHub Actions publishes to npm automatically.
+4. Push tag: `git push origin vX.Y.Z` — the `publish.yml` workflow publishes to
+   npm automatically, with provenance attached.
+
+If Trusted Publishing isn't configured yet, publish manually instead:
+`npm publish --access public` (npm will prompt for your 2FA OTP).
 
 ## Reporting bugs
 

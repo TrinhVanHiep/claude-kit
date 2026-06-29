@@ -1,5 +1,11 @@
 name: Publish to npm
 
+# Uses npm Trusted Publishing (OIDC) — no NPM_TOKEN secret, no OTP. Configure the
+# trusted publisher once at npmjs.com → package → Settings → Trusted Publisher:
+#   repository: TrinhVanHiep/claude-kit
+#   workflow:   .github/workflows/publish.yml
+# Provenance is attached automatically.
+
 on:
   push:
     tags:
@@ -10,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      id-token: write
+      id-token: write  # required for OIDC trusted publishing
     steps:
       - uses: actions/checkout@v4
 
@@ -19,10 +25,11 @@ jobs:
           node-version: '20'
           registry-url: 'https://registry.npmjs.org'
 
+      - name: Upgrade npm (Trusted Publishing needs npm >= 11.5.1)
+        run: npm install -g npm@latest
+
       - name: Validate skills/agents frontmatter
         run: node scripts/validate-skills.mjs templates/agents templates/commands
 
       - name: Publish
-        run: npm publish --provenance --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm publish --access public
